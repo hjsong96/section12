@@ -10,15 +10,21 @@ import Notfound from './pages/Notfound';
 const mokData = [
     {
         id: 1,
-        createdDate: new Date().getTime(),
+        createdDate: new Date('2025-08-12').getTime(),
         emotionId: 1,
         content: '1번 감정일기장',
     },
     {
         id: 2,
-        createdDate: new Date().getTime(),
+        createdDate: new Date('2025-08-11').getTime(),
         emotionId: 2,
         content: '2번 감정일기장',
+    },
+    {
+        id: 3,
+        createdDate: new Date('2025-07-11').getTime(),
+        emotionId: 3,
+        content: '3번 감정일기장',
     },
 ];
 
@@ -35,8 +41,8 @@ function reducer(state, action) {
     }
 }
 
-const DiaryStateContext = createContext();
-const DiaryDispatchContext = createContext();
+export const DiaryStateContext = createContext();
+export const DiaryDispatchContext = createContext();
 
 function App() {
     const [data, dispatch] = useReducer(reducer, mokData);
@@ -78,27 +84,6 @@ function App() {
 
     return (
         <>
-            <button
-                onClick={() => {
-                    onCreate(new Date().getTime(), 3, 'HELLO');
-                }}
-            >
-                일기 추가 테스트
-            </button>
-            <button
-                onClick={() => {
-                    onUpdate(1, new Date().getTime(), 4, '수정된 일기입니다.');
-                }}
-            >
-                일기 수정 테스트
-            </button>
-            <button
-                onClick={() => {
-                    onDelete(2);
-                }}
-            >
-                일기 삭제 테스트
-            </button>
             <DiaryStateContext.Provider value={data}>
                 <DiaryDispatchContext.Provider
                     value={{
