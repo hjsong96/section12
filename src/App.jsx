@@ -1,36 +1,40 @@
-import './App.css';
-import { useReducer, useRef, createContext, useEffect, useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
-import Diary from './pages/Diary';
-import Home from './pages/Home';
-import New from './pages/New';
-import Edit from './pages/Edit';
-import Notfound from './pages/Notfound';
+import "./App.css";
+import { useReducer, useRef, createContext, useEffect, useState } from "react";
+import { Routes, Route } from "react-router-dom";
+import Diary from "./pages/Diary";
+import Home from "./pages/Home";
+import New from "./pages/New";
+import Edit from "./pages/Edit";
+import Notfound from "./pages/Notfound";
 
 function reducer(state, action) {
     let nextState;
 
     switch (action.type) {
-        case 'INIT': {
+        case "INIT": {
             return action.data;
         }
-        case 'CREATE': {
+        case "CREATE": {
             nextState = [action.data, ...state];
             break;
         }
-        case 'UPDATE': {
-            nextState = state.map((item) => (String(item.id) === String(action.data.id) ? action.data : item));
+        case "UPDATE": {
+            nextState = state.map((item) =>
+                String(item.id) === String(action.data.id) ? action.data : item
+            );
             break;
         }
-        case 'DELETE': {
-            nextState = state.filter((item) => String(item.id) !== String(action.id));
+        case "DELETE": {
+            nextState = state.filter(
+                (item) => String(item.id) !== String(action.id)
+            );
             break;
         }
         default:
             return state;
     }
 
-    localStorage.setItem('diary', JSON.stringify(nextState));
+    localStorage.setItem("diary", JSON.stringify(nextState));
 
     return nextState;
 }
@@ -44,15 +48,17 @@ function App() {
     const idRef = useRef(0);
 
     useEffect(() => {
-        const storedData = localStorage.getItem('diary');
+        const storedData = localStorage.getItem("diary");
 
         if (!storedData) {
+            setIsLoading(false);
             return;
         }
 
         const parsedData = JSON.parse(storedData);
 
         if (!Array.isArray(parsedData)) {
+            setIsLoading(false);
             return;
         }
 
@@ -66,7 +72,7 @@ function App() {
         idRef.current = maxId + 1;
 
         dispatch({
-            type: 'INIT',
+            type: "INIT",
             data: parsedData,
         });
         setIsLoading(false);
@@ -75,7 +81,7 @@ function App() {
     // 새로운 일기 추가
     const onCreate = (createdDate, emotionId, content) => {
         dispatch({
-            type: 'CREATE',
+            type: "CREATE",
             data: {
                 id: idRef.current++,
                 createdDate,
@@ -88,7 +94,7 @@ function App() {
     // 기존 일기 수정
     const onUpdate = (id, createdDate, emotionId, content) => {
         dispatch({
-            type: 'UPDATE',
+            type: "UPDATE",
             data: {
                 id,
                 createdDate,
@@ -101,10 +107,14 @@ function App() {
     // 기존 일기 삭제
     const onDelete = (id) => {
         dispatch({
-            type: 'DELETE',
+            type: "DELETE",
             id,
         });
     };
+
+    if (isLoading) {
+        return <div>로딩중...</div>;
+    }
 
     return (
         <>
